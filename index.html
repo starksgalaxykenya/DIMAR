@@ -347,7 +347,7 @@
     <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 py-8 mt-auto">
         <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
-            &copy; <span id="footer-year">2026</span> <span id="footer-brand">PhysioCare Hub</span>. All rights reserved. Powered by Firebase.
+            &copy; <span id="footer-year">2026</span> <span id="footer-brand">PhysioCare Hub</span>. All rights reserved. Powered by Firebase Realtime Sync.
         </div>
     </footer>
 
@@ -378,11 +378,11 @@
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
+    <!-- Firebase SDKs with Realtime Listeners -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCfA890xkK8BQ3rb4_gvAKCFAVa50VLaBk",
@@ -413,23 +413,25 @@
             appointments: []
         };
 
-        // --- LOAD DATA FROM FIRESTORE ---
-        window.loadAppData = async function() {
-            try {
-                // Config
-                const configDoc = await getDoc(doc(db, "config", "global"));
-                if (configDoc.exists()) {
-                    window.appState.config = configDoc.data();
+        // --- REALTIME FIRESTORE LISTENERS ---
+        // This ensures anyone anywhere on any device instantly sees any updates made to Firestore
+        function initRealtimeListeners() {
+            // 1. Config Listener
+            onSnapshot(doc(db, "config", "global"), async (docSnap) => {
+                if (docSnap.exists()) {
+                    window.appState.config = docSnap.data();
                 } else {
                     await setDoc(doc(db, "config", "global"), window.appState.config);
                 }
+                renderUI();
+            });
 
-                // Services
-                const servSnapshot = await getDocs(collection(db, "services"));
+            // 2. Services Listener
+            onSnapshot(collection(db, "services"), async (snapshot) => {
                 window.appState.services = [];
-                servSnapshot.forEach(d => window.appState.services.push({ id: d.id, ...d.data() }));
+                snapshot.forEach(d => window.appState.services.push({ id: d.id, ...d.data() }));
 
-                // If empty, seed default services
+                // Auto-seed default services if empty
                 if (window.appState.services.length === 0) {
                     const defaults = [
                         { title: "Sports Rehabilitation", price: 90, duration: "60 mins", description: "Targeted recovery for athletes recovering from sprains, tears, and joint strains." },
@@ -439,15 +441,17 @@
                     for (let s of defaults) {
                         await addDoc(collection(db, "services"), s);
                     }
-                    const newServ = await getDocs(collection(db, "services"));
-                    newServ.forEach(d => window.appState.services.push({ id: d.id, ...d.data() }));
+                } else {
+                    renderUI();
                 }
+            });
 
-                // Locations
-                const locSnapshot = await getDocs(collection(db, "locations"));
+            // 3. Locations Listener
+            onSnapshot(collection(db, "locations"), async (snapshot) => {
                 window.appState.locations = [];
-                locSnapshot.forEach(d => window.appState.locations.push({ id: d.id, ...d.data() }));
+                snapshot.forEach(d => window.appState.locations.push({ id: d.id, ...d.data() }));
 
+                // Auto-seed default locations if empty
                 if (window.appState.locations.length === 0) {
                     const defaultsLoc = [
                         { name: "Downtown Clinic", address: "123 Kenyatta Avenue, Nairobi", phone: "+254 711 223344", hours: "Mon - Sat: 8AM - 7PM" },
@@ -456,20 +460,18 @@
                     for (let l of defaultsLoc) {
                         await addDoc(collection(db, "locations"), l);
                     }
-                    const newLoc = await getDocs(collection(db, "locations"));
-                    newLoc.forEach(d => window.appState.locations.push({ id: d.id, ...d.data() }));
+                } else {
+                    renderUI();
                 }
+            });
 
-                // Appointments
-                const apptSnapshot = await getDocs(collection(db, "appointments"));
+            // 4. Appointments Listener
+            onSnapshot(collection(db, "appointments"), (snapshot) => {
                 window.appState.appointments = [];
-                apptSnapshot.forEach(d => window.appState.appointments.push({ id: d.id, ...d.data() }));
-
+                snapshot.forEach(d => window.appState.appointments.push({ id: d.id, ...d.data() }));
                 renderUI();
-            } catch (err) {
-                console.error("Error loading app data from Firestore:", err);
-            }
-        };
+            });
+        }
 
         // --- RENDER UI ---
         function renderUI() {
@@ -598,8 +600,7 @@
                 createdAt: new Date().toISOString()
             };
             try {
-                const docRef = await addDoc(collection(db, "appointments"), booking);
-                window.appState.appointments.push({ id: docRef.id, ...booking });
+                await addDoc(collection(db, "appointments"), booking);
                 alert("Appointment booked successfully!");
                 document.getElementById('booking-form').reset();
                 switchTab('home');
@@ -620,9 +621,7 @@
             };
             try {
                 await setDoc(doc(db, "config", "global"), newConfig);
-                window.appState.config = newConfig;
-                renderUI();
-                alert("Global configurations saved successfully!");
+                alert("Global configurations saved & broadcasted globally!");
             } catch (err) {
                 alert("Error saving config: " + err.message);
             }
@@ -643,7 +642,6 @@
                 } else {
                     await addDoc(collection(db, "services"), data);
                 }
-                await loadAppData();
                 resetServiceForm();
             } catch (err) {
                 alert("Error saving service: " + err.message);
@@ -671,7 +669,6 @@
             if (!confirm("Are you sure you want to delete this service?")) return;
             try {
                 await deleteDoc(doc(db, "services", id));
-                await loadAppData();
             } catch (err) {
                 alert("Error deleting service: " + err.message);
             }
@@ -692,7 +689,6 @@
                 } else {
                     await addDoc(collection(db, "locations"), data);
                 }
-                await loadAppData();
                 resetLocationForm();
             } catch (err) {
                 alert("Error saving location: " + err.message);
@@ -720,7 +716,6 @@
             if (!confirm("Are you sure you want to delete this location?")) return;
             try {
                 await deleteDoc(doc(db, "locations", id));
-                await loadAppData();
             } catch (err) {
                 alert("Error deleting location: " + err.message);
             }
@@ -729,7 +724,6 @@
         window.updateAppointmentStatus = async function(id, status) {
             try {
                 await updateDoc(doc(db, "appointments", id), { status });
-                await loadAppData();
             } catch (err) {
                 alert("Error updating appointment: " + err.message);
             }
@@ -739,7 +733,6 @@
             if (!confirm("Are you sure you want to delete this appointment?")) return;
             try {
                 await deleteDoc(doc(db, "appointments", id));
-                await loadAppData();
             } catch (err) {
                 alert("Error deleting appointment: " + err.message);
             }
@@ -775,8 +768,8 @@
             }
         });
 
-        // Initialize App on Load
-        loadAppData();
+        // Initialize Realtime Listeners on Load
+        initRealtimeListeners();
     </script>
 
     <!-- UI Tab Navigation Helpers -->
@@ -799,7 +792,6 @@
         }
 
         function openAuthModal() {
-            // Check if already logged in via Firebase Auth state
             document.getElementById('auth-modal').classList.remove('hidden');
             document.getElementById('auth-modal').classList.add('flex');
         }

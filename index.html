@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Business Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #3b82f6;
+        }
+        .bg-primary { background-color: var(--primary-color) !important; }
+        .text-primary { color: var(--primary-color) !important; }
+        .border-primary { border-color: var(--primary-color) !important; }
+        .bg-secondary { background-color: var(--secondary-color) !important; }
+        .text-secondary { color: var(--secondary-color) !important; }
+        .bg-accent { background-color: var(--accent-color) !important; }
+    </style>
+</head>
+<body class="h-full bg-gray-50 text-gray-800 flex flex-col font-sans antialiased">
+
+    <!-- Top Navigation -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div id="nav-logo-icon" class="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-hospital"></i>
+                </div>
+                <div>
+                    <h1 id="nav-brand-title" class="text-lg font-bold text-gray-900 tracking-tight">PhysioCare Hub</h1>
+                    <p id="nav-brand-tagline" class="text-xs text-gray-500">Advanced Physical Therapy & Wellness</p>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <button onclick="switchTab('home')" class="nav-link text-primary font-semibold hover:text-primary transition">Home</button>
+                <button onclick="switchTab('services')" class="nav-link text-gray-600 hover:text-primary transition">Services & Pricing</button>
+                <button onclick="switchTab('locations')" class="nav-link text-gray-600 hover:text-primary transition">Locations</button>
+                <button onclick="switchTab('book')" class="nav-link text-gray-600 hover:text-primary transition">Book Appointment</button>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="openAuthModal()" class="inline-flex items-center space-x-1.5 px-4 py-2 border border-gray-300 text-xs font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition">
+                    <i class="fa-solid fa-lock text-gray-500"></i>
+                    <span>Admin Portal</span>
+                </button>
+                <button onclick="switchTab('book')" class="hidden sm:inline-flex items-center space-x-1.5 px-4 py-2 bg-primary text-white text-xs font-semibold rounded-lg shadow hover:opacity-90 transition">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Book Now</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow">
+
+        <!-- TAB: HOME -->
+        <section id="tab-home" class="tab-content">
+            <!-- Hero -->
+            <div class="relative bg-gray-900 text-white overflow-hidden py-24 sm:py-32">
+                <div class="absolute inset-0 opacity-40 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1920');"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/85 to-transparent"></div>
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-2xl">
+                        <span id="hero-badge" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-primary text-white uppercase tracking-wider mb-4">World-Class Recovery</span>
+                        <h2 id="hero-title" class="text-4xl sm:text-5xl font-extrabold tracking-tight mb-6 leading-tight">Professional Physiotherapy Tailored For You</h2>
+                        <p id="hero-subtitle" class="text-lg text-gray-300 mb-8">Regain mobility, eliminate pain, and elevate your quality of life with evidence-based treatments administered by expert therapists.</p>
+                        <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                            <button onclick="switchTab('book')" class="px-8 py-3.5 bg-primary text-white font-semibold rounded-xl shadow-lg hover:opacity-90 transition text-center">Book Consultation</button>
+                            <button onclick="switchTab('services')" class="px-8 py-3.5 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/20 text-white font-semibold rounded-xl transition text-center">View Services</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Highlights -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start">
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl mb-4 font-bold">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Expert Specialists</h3>
+                        <p class="text-gray-600 text-sm">Certified physical therapists specializing in sports injuries, post-surgery rehab, and chronic pain management.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start">
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl mb-4 font-bold">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Flexible Scheduling</h3>
+                        <p class="text-gray-600 text-sm">Instant online booking system allowing you to secure your preferred slot and location seamlessly.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-start">
+                        <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl mb-4 font-bold">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Multiple Centers</h3>
+                        <p class="text-gray-600 text-sm">State-of-the-art facilities equipped with cutting-edge rehabilitation technology across key locations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: SERVICES & PRICING -->
+        <section id="tab-services" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Services & Transparent Pricing</h2>
+                <p class="text-gray-600">Choose from our comprehensive list of clinical services. All treatment plans are fully customizable to your rehabilitation milestones.</p>
+            </div>
+            <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Dynamically Rendered -->
+            </div>
+        </section>
+
+        <!-- TAB: LOCATIONS -->
+        <section id="tab-locations" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Our Clinic Locations</h2>
+                <p class="text-gray-600">Visit any of our fully equipped branches for specialized consultations and therapy.</p>
+            </div>
+            <div id="locations-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Dynamically Rendered -->
+            </div>
+        </section>
+
+        <!-- TAB: BOOK APPOINTMENT -->
+        <section id="tab-book" class="tab-content hidden max-w-4xl mx-auto px-4 py-12">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 sm:p-12">
+                <div class="mb-8 border-b border-gray-100 pb-6">
+                    <h2 class="text-2xl font-extrabold text-gray-900">Schedule an Appointment</h2>
+                    <p class="text-sm text-gray-500 mt-1">Fill out the details below to instantly reserve your session with our specialists.</p>
+                </div>
+                <form id="booking-form" onsubmit="handleBookingSubmit(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-2">Select Service</label>
+                            <select id="booking-service" required class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:outline-none text-sm bg-white">
+                                <!-- Dynamically populated -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-2">Select Location</label>
+                            <select id="booking-location" required class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:outline-none text-sm bg-white">
+                                <!-- Dynamically populated -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-2">Full Name</label>
+                            <input type="text" id="booking-name" required placeholder="Stark Cyrille" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-2">Email Address</label>
+                            <input type="email" id="booking-email" required placeholder="stark@example.com" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-2">Phone Number</label>
+                            <input type="tel" id="booking-phone" required placeholder="+254 700 000000" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-2">Appointment Date & Time</label>
+                            <input type="datetime-local" id="booking-datetime" required class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:outline-none text-sm">
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-4 bg-primary text-white font-bold rounded-xl shadow hover:opacity-90 transition">Confirm Booking</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB: ADMIN PORTAL -->
+        <section id="tab-admin" class="tab-content hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 pb-6 border-b border-gray-200">
+                <div>
+                    <h2 class="text-3xl font-extrabold text-gray-900">Admin Control Center</h2>
+                    <p class="text-sm text-gray-500 mt-1">Manage brand configurations, services, locations, and incoming appointments in real-time.</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex items-center space-x-3">
+                    <span id="admin-user-email" class="text-xs font-medium text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg"></span>
+                    <button onclick="handleLogout()" class="px-4 py-2 bg-red-50 text-red-600 text-xs font-semibold rounded-lg hover:bg-red-100 transition">Log Out</button>
+                </div>
+            </div>
+
+            <!-- Admin Sub-Navigation Tabs -->
+            <div class="flex space-x-2 border-b border-gray-200 mb-8 overflow-x-auto">
+                <button onclick="switchAdminSubTab('config')" class="admin-sub-tab px-5 py-3 text-sm font-semibold border-b-2 border-primary text-primary">Global Settings & Branding</button>
+                <button onclick="switchAdminSubTab('services')" class="admin-sub-tab px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700">Services & Pricing</button>
+                <button onclick="switchAdminSubTab('locations')" class="admin-sub-tab px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700">Locations</button>
+                <button onclick="switchAdminSubTab('appointments')" class="admin-sub-tab px-5 py-3 text-sm font-semibold border-b-2 border-transparent text-gray-500 hover:text-gray-700">Appointments</button>
+            </div>
+
+            <!-- SubTab: Config -->
+            <div id="admin-sub-config" class="admin-sub-content max-w-2xl bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                <h3 class="text-lg font-bold text-gray-900 mb-6">Global Branding & Content</h3>
+                <form id="config-form" onsubmit="saveGlobalConfig(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Brand/Company Name</label>
+                        <input type="text" id="cfg-brandName" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Tagline / Subtitle</label>
+                        <input type="text" id="cfg-tagline" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Primary Color</label>
+                            <input type="color" id="cfg-primaryColor" class="w-full h-10 p-1 rounded-xl border border-gray-300 cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Secondary Color</label>
+                            <input type="color" id="cfg-secondaryColor" class="w-full h-10 p-1 rounded-xl border border-gray-300 cursor-pointer">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Hero Title</label>
+                        <input type="text" id="cfg-heroTitle" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Hero Subtitle</label>
+                        <textarea id="cfg-heroSubtitle" rows="3" required class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm"></textarea>
+                    </div>
+                    <button type="submit" class="px-6 py-3 bg-primary text-white font-semibold rounded-xl text-sm shadow hover:opacity-90 transition">Save Configurations</button>
+                </form>
+            </div>
+
+            <!-- SubTab: Services -->
+            <div id="admin-sub-services" class="admin-sub-content hidden space-y-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 max-w-xl">
+                    <h3 id="service-form-title" class="text-base font-bold text-gray-900 mb-4">Add New Service</h3>
+                    <form id="service-form" onsubmit="handleServiceSubmit(event)" class="space-y-4">
+                        <input type="hidden" id="service-edit-id">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Service Title</label>
+                            <input type="text" id="service-title" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Price ($)</label>
+                                <input type="number" id="service-price" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Duration (e.g., 45 mins)</label>
+                                <input type="text" id="service-duration" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Description</label>
+                            <textarea id="service-description" rows="2" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm"></textarea>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button type="submit" class="px-5 py-2.5 bg-primary text-white font-semibold rounded-xl text-sm shadow">Save Service</button>
+                            <button type="button" onclick="resetServiceForm()" class="px-5 py-2.5 bg-gray-100 text-gray-600 font-semibold rounded-xl text-sm">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-xs">
+                                <th class="p-4 font-semibold">Title</th>
+                                <th class="p-4 font-semibold">Price</th>
+                                <th class="p-4 font-semibold">Duration</th>
+                                <th class="p-4 font-semibold">Description</th>
+                                <th class="p-4 font-semibold text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-services-table" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SubTab: Locations -->
+            <div id="admin-sub-locations" class="admin-sub-content hidden space-y-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 max-w-xl">
+                    <h3 id="location-form-title" class="text-base font-bold text-gray-900 mb-4">Add New Location</h3>
+                    <form id="location-form" onsubmit="handleLocationSubmit(event)" class="space-y-4">
+                        <input type="hidden" id="location-edit-id">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Location Name</label>
+                            <input type="text" id="location-name" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Full Address</label>
+                            <input type="text" id="location-address" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Phone</label>
+                                <input type="text" id="location-phone" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Operating Hours</label>
+                                <input type="text" id="location-hours" required class="w-full px-4 py-2 rounded-xl border border-gray-300 text-sm">
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button type="submit" class="px-5 py-2.5 bg-primary text-white font-semibold rounded-xl text-sm shadow">Save Location</button>
+                            <button type="button" onclick="resetLocationForm()" class="px-5 py-2.5 bg-gray-100 text-gray-600 font-semibold rounded-xl text-sm">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-xs">
+                                <th class="p-4 font-semibold">Name</th>
+                                <th class="p-4 font-semibold">Address</th>
+                                <th class="p-4 font-semibold">Phone</th>
+                                <th class="p-4 font-semibold">Hours</th>
+                                <th class="p-4 font-semibold text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-locations-table" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SubTab: Appointments -->
+            <div id="admin-sub-appointments" class="admin-sub-content hidden space-y-4">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-xs">
+                                <th class="p-4 font-semibold">Customer</th>
+                                <th class="p-4 font-semibold">Service</th>
+                                <th class="p-4 font-semibold">Location</th>
+                                <th class="p-4 font-semibold">Date & Time</th>
+                                <th class="p-4 font-semibold">Status</th>
+                                <th class="p-4 font-semibold text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-appointments-table" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-gray-500">
+            &copy; <span id="footer-year">2026</span> <span id="footer-brand">PhysioCare Hub</span>. All rights reserved. Powered by Firebase.
+        </div>
+    </footer>
+
+    <!-- Admin Authentication Modal -->
+    <div id="auth-modal" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-xl mx-auto mb-3">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h3 class="text-xl font-extrabold text-gray-900">Admin Portal Sign In</h3>
+                <p class="text-xs text-gray-500 mt-1">Enter your admin credentials to access management controls.</p>
+            </div>
+            <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Email Address</label>
+                    <input type="email" id="auth-email" required placeholder="admin@physiocare.com" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Password</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm">
+                </div>
+                <button type="submit" class="w-full py-3 bg-primary text-white font-semibold rounded-xl text-sm shadow hover:opacity-90 transition">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCfA890xkK8BQ3rb4_gvAKCFAVa50VLaBk",
+            authDomain: "hospital-app-physiotherapy.firebaseapp.com",
+            projectId: "hospital-app-physiotherapy",
+            storageBucket: "hospital-app-physiotherapy.firebasestorage.app",
+            messagingSenderId: "805419498613",
+            appId: "1:805419498613:web:bbcf3c4cf615fba2b00c3c",
+            measurementId: "G-RCR5967YYF"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Global State
+        window.appState = {
+            config: {
+                brandName: "PhysioCare Hub",
+                tagline: "Advanced Physical Therapy & Wellness",
+                primaryColor: "#2563eb",
+                secondaryColor: "#1e40af",
+                heroTitle: "Professional Physiotherapy Tailored For You",
+                heroSubtitle: "Regain mobility, eliminate pain, and elevate your quality of life with evidence-based treatments administered by expert therapists."
+            },
+            services: [],
+            locations: [],
+            appointments: []
+        };
+
+        // --- LOAD DATA FROM FIRESTORE ---
+        window.loadAppData = async function() {
+            try {
+                // Config
+                const configDoc = await getDoc(doc(db, "config", "global"));
+                if (configDoc.exists()) {
+                    window.appState.config = configDoc.data();
+                } else {
+                    await setDoc(doc(db, "config", "global"), window.appState.config);
+                }
+
+                // Services
+                const servSnapshot = await getDocs(collection(db, "services"));
+                window.appState.services = [];
+                servSnapshot.forEach(d => window.appState.services.push({ id: d.id, ...d.data() }));
+
+                // If empty, seed default services
+                if (window.appState.services.length === 0) {
+                    const defaults = [
+                        { title: "Sports Rehabilitation", price: 90, duration: "60 mins", description: "Targeted recovery for athletes recovering from sprains, tears, and joint strains." },
+                        { title: "Post-Surgery Recovery", price: 120, duration: "75 mins", description: "Specialized rehabilitation protocols following orthopedic and joint replacement surgeries." },
+                        { title: "Spine & Back Therapy", price: 80, duration: "45 mins", description: "Spinal decompression and targeted therapy for chronic lower back and neck pain." }
+                    ];
+                    for (let s of defaults) {
+                        await addDoc(collection(db, "services"), s);
+                    }
+                    const newServ = await getDocs(collection(db, "services"));
+                    newServ.forEach(d => window.appState.services.push({ id: d.id, ...d.data() }));
+                }
+
+                // Locations
+                const locSnapshot = await getDocs(collection(db, "locations"));
+                window.appState.locations = [];
+                locSnapshot.forEach(d => window.appState.locations.push({ id: d.id, ...d.data() }));
+
+                if (window.appState.locations.length === 0) {
+                    const defaultsLoc = [
+                        { name: "Downtown Clinic", address: "123 Kenyatta Avenue, Nairobi", phone: "+254 711 223344", hours: "Mon - Sat: 8AM - 7PM" },
+                        { name: "Westlands Wellness Center", address: "45 Waiyaki Way, Nairobi", phone: "+254 722 334455", hours: "Mon - Fri: 8AM - 6PM" }
+                    ];
+                    for (let l of defaultsLoc) {
+                        await addDoc(collection(db, "locations"), l);
+                    }
+                    const newLoc = await getDocs(collection(db, "locations"));
+                    newLoc.forEach(d => window.appState.locations.push({ id: d.id, ...d.data() }));
+                }
+
+                // Appointments
+                const apptSnapshot = await getDocs(collection(db, "appointments"));
+                window.appState.appointments = [];
+                apptSnapshot.forEach(d => window.appState.appointments.push({ id: d.id, ...d.data() }));
+
+                renderUI();
+            } catch (err) {
+                console.error("Error loading app data from Firestore:", err);
+            }
+        };
+
+        // --- RENDER UI ---
+        function renderUI() {
+            const cfg = window.appState.config;
+            
+            // Apply Branding colors
+            document.documentElement.style.setProperty('--primary-color', cfg.primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', cfg.secondaryColor);
+
+            // Nav & Footer
+            document.getElementById('nav-brand-title').innerText = cfg.brandName;
+            document.getElementById('nav-brand-tagline').innerText = cfg.tagline;
+            document.getElementById('footer-brand').innerText = cfg.brandName;
+
+            // Hero
+            document.getElementById('hero-title').innerText = cfg.heroTitle;
+            document.getElementById('hero-subtitle').innerText = cfg.heroSubtitle;
+
+            // Services Grid
+            const servGrid = document.getElementById('services-grid');
+            servGrid.innerHTML = window.appState.services.map(s => `
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary">${s.duration}</span>
+                            <span class="text-2xl font-extrabold text-gray-900">$${s.price}</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${s.title}</h3>
+                        <p class="text-gray-600 text-sm mb-6">${s.description}</p>
+                    </div>
+                    <button onclick="switchTab('book'); document.getElementById('booking-service').value='${s.id}';" class="w-full py-3 bg-gray-900 text-white font-semibold rounded-xl text-sm hover:bg-primary transition">Book This Service</button>
+                </div>
+            `).join('');
+
+            // Locations Grid
+            const locGrid = document.getElementById('locations-grid');
+            locGrid.innerHTML = window.appState.locations.map(l => `
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-lg font-bold mb-4">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${l.name}</h3>
+                        <p class="text-gray-600 text-sm mb-4"><i class="fa-solid fa-map-pin mr-2 text-primary"></i>${l.address}</p>
+                        <p class="text-gray-600 text-sm mb-2"><i class="fa-solid fa-phone mr-2 text-primary"></i>${l.phone}</p>
+                        <p class="text-gray-600 text-sm"><i class="fa-solid fa-clock mr-2 text-primary"></i>${l.hours}</p>
+                    </div>
+                    <button onclick="switchTab('book'); document.getElementById('booking-location').value='${l.id}';" class="mt-6 w-full py-2.5 border border-gray-300 text-gray-700 font-semibold rounded-xl text-sm hover:bg-gray-50 transition">Book at this Location</button>
+                </div>
+            `).join('');
+
+            // Booking Dropdowns
+            document.getElementById('booking-service').innerHTML = window.appState.services.map(s => `<option value="${s.id}">${s.title} ($${s.price})</option>`).join('');
+            document.getElementById('booking-location').innerHTML = window.appState.locations.map(l => `<option value="${l.id}">${l.name} - ${l.address}</option>`).join('');
+
+            // Admin Tables & Forms
+            document.getElementById('cfg-brandName').value = cfg.brandName;
+            document.getElementById('cfg-tagline').value = cfg.tagline;
+            document.getElementById('cfg-primaryColor').value = cfg.primaryColor;
+            document.getElementById('cfg-secondaryColor').value = cfg.secondaryColor;
+            document.getElementById('cfg-heroTitle').value = cfg.heroTitle;
+            document.getElementById('cfg-heroSubtitle').value = cfg.heroSubtitle;
+
+            // Admin Services Table
+            document.getElementById('admin-services-table').innerHTML = window.appState.services.map(s => `
+                <tr class="hover:bg-gray-50">
+                    <td class="p-4 font-semibold text-gray-900">${s.title}</td>
+                    <td class="p-4">$${s.price}</td>
+                    <td class="p-4">${s.duration}</td>
+                    <td class="p-4 text-gray-500 truncate max-w-xs">${s.description}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="editService('${s.id}')" class="text-primary hover:underline font-medium">Edit</button>
+                        <button onclick="deleteServiceRecord('${s.id}')" class="text-red-600 hover:underline font-medium">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Admin Locations Table
+            document.getElementById('admin-locations-table').innerHTML = window.appState.locations.map(l => `
+                <tr class="hover:bg-gray-50">
+                    <td class="p-4 font-semibold text-gray-900">${l.name}</td>
+                    <td class="p-4 text-gray-500">${l.address}</td>
+                    <td class="p-4">${l.phone}</td>
+                    <td class="p-4">${l.hours}</td>
+                    <td class="p-4 text-right space-x-2">
+                        <button onclick="editLocation('${l.id}')" class="text-primary hover:underline font-medium">Edit</button>
+                        <button onclick="deleteLocationRecord('${l.id}')" class="text-red-600 hover:underline font-medium">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Admin Appointments Table
+            document.getElementById('admin-appointments-table').innerHTML = window.appState.appointments.map(a => {
+                const s = window.appState.services.find(x => x.id === a.serviceId)?.title || 'Service';
+                const l = window.appState.locations.find(x => x.id === a.locationId)?.name || 'Location';
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-4">
+                            <div class="font-semibold text-gray-900">${a.customerName}</div>
+                            <div class="text-xs text-gray-500">${a.customerEmail} • ${a.customerPhone}</div>
+                        </td>
+                        <td class="p-4">${s}</td>
+                        <td class="p-4">${l}</td>
+                        <td class="p-4">${a.appointmentDate}</td>
+                        <td class="p-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${a.status === 'Confirmed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">${a.status}</span></td>
+                        <td class="p-4 text-right space-x-2">
+                            <button onclick="updateAppointmentStatus('${a.id}', 'Confirmed')" class="text-green-600 hover:underline font-medium text-xs">Confirm</button>
+                            <button onclick="deleteAppointmentRecord('${a.id}')" class="text-red-600 hover:underline font-medium text-xs">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // --- ACTIONS & HANDLERS ---
+        window.handleBookingSubmit = async function(e) {
+            e.preventDefault();
+            const booking = {
+                serviceId: document.getElementById('booking-service').value,
+                locationId: document.getElementById('booking-location').value,
+                customerName: document.getElementById('booking-name').value,
+                customerEmail: document.getElementById('booking-email').value,
+                customerPhone: document.getElementById('booking-phone').value,
+                appointmentDate: document.getElementById('booking-datetime').value,
+                status: 'Pending',
+                createdAt: new Date().toISOString()
+            };
+            try {
+                const docRef = await addDoc(collection(db, "appointments"), booking);
+                window.appState.appointments.push({ id: docRef.id, ...booking });
+                alert("Appointment booked successfully!");
+                document.getElementById('booking-form').reset();
+                switchTab('home');
+            } catch (err) {
+                alert("Error booking appointment: " + err.message);
+            }
+        };
+
+        window.saveGlobalConfig = async function(e) {
+            e.preventDefault();
+            const newConfig = {
+                brandName: document.getElementById('cfg-brandName').value,
+                tagline: document.getElementById('cfg-tagline').value,
+                primaryColor: document.getElementById('cfg-primaryColor').value,
+                secondaryColor: document.getElementById('cfg-secondaryColor').value,
+                heroTitle: document.getElementById('cfg-heroTitle').value,
+                heroSubtitle: document.getElementById('cfg-heroSubtitle').value
+            };
+            try {
+                await setDoc(doc(db, "config", "global"), newConfig);
+                window.appState.config = newConfig;
+                renderUI();
+                alert("Global configurations saved successfully!");
+            } catch (err) {
+                alert("Error saving config: " + err.message);
+            }
+        };
+
+        window.handleServiceSubmit = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('service-edit-id').value;
+            const data = {
+                title: document.getElementById('service-title').value,
+                price: Number(document.getElementById('service-price').value),
+                duration: document.getElementById('service-duration').value,
+                description: document.getElementById('service-description').value
+            };
+            try {
+                if (id) {
+                    await updateDoc(doc(db, "services", id), data);
+                } else {
+                    await addDoc(collection(db, "services"), data);
+                }
+                await loadAppData();
+                resetServiceForm();
+            } catch (err) {
+                alert("Error saving service: " + err.message);
+            }
+        };
+
+        window.editService = function(id) {
+            const s = window.appState.services.find(x => x.id === id);
+            if (!s) return;
+            document.getElementById('service-edit-id').value = s.id;
+            document.getElementById('service-title').value = s.title;
+            document.getElementById('service-price').value = s.price;
+            document.getElementById('service-duration').value = s.duration;
+            document.getElementById('service-description').value = s.description;
+            document.getElementById('service-form-title').innerText = "Edit Service";
+        };
+
+        window.resetServiceForm = function() {
+            document.getElementById('service-form').reset();
+            document.getElementById('service-edit-id').value = '';
+            document.getElementById('service-form-title').innerText = "Add New Service";
+        };
+
+        window.deleteServiceRecord = async function(id) {
+            if (!confirm("Are you sure you want to delete this service?")) return;
+            try {
+                await deleteDoc(doc(db, "services", id));
+                await loadAppData();
+            } catch (err) {
+                alert("Error deleting service: " + err.message);
+            }
+        };
+
+        window.handleLocationSubmit = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('location-edit-id').value;
+            const data = {
+                name: document.getElementById('location-name').value,
+                address: document.getElementById('location-address').value,
+                phone: document.getElementById('location-phone').value,
+                hours: document.getElementById('location-hours').value
+            };
+            try {
+                if (id) {
+                    await updateDoc(doc(db, "locations", id), data);
+                } else {
+                    await addDoc(collection(db, "locations"), data);
+                }
+                await loadAppData();
+                resetLocationForm();
+            } catch (err) {
+                alert("Error saving location: " + err.message);
+            }
+        };
+
+        window.editLocation = function(id) {
+            const l = window.appState.locations.find(x => x.id === id);
+            if (!l) return;
+            document.getElementById('location-edit-id').value = l.id;
+            document.getElementById('location-name').value = l.name;
+            document.getElementById('location-address').value = l.address;
+            document.getElementById('location-phone').value = l.phone;
+            document.getElementById('location-hours').value = l.hours;
+            document.getElementById('location-form-title').innerText = "Edit Location";
+        };
+
+        window.resetLocationForm = function() {
+            document.getElementById('location-form').reset();
+            document.getElementById('location-edit-id').value = '';
+            document.getElementById('location-form-title').innerText = "Add New Location";
+        };
+
+        window.deleteLocationRecord = async function(id) {
+            if (!confirm("Are you sure you want to delete this location?")) return;
+            try {
+                await deleteDoc(doc(db, "locations", id));
+                await loadAppData();
+            } catch (err) {
+                alert("Error deleting location: " + err.message);
+            }
+        };
+
+        window.updateAppointmentStatus = async function(id, status) {
+            try {
+                await updateDoc(doc(db, "appointments", id), { status });
+                await loadAppData();
+            } catch (err) {
+                alert("Error updating appointment: " + err.message);
+            }
+        };
+
+        window.deleteAppointmentRecord = async function(id) {
+            if (!confirm("Are you sure you want to delete this appointment?")) return;
+            try {
+                await deleteDoc(doc(db, "appointments", id));
+                await loadAppData();
+            } catch (err) {
+                alert("Error deleting appointment: " + err.message);
+            }
+        };
+
+        // --- AUTHENTICATION ---
+        window.handleLoginSubmit = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                closeAuthModal();
+                switchTab('admin');
+            } catch (err) {
+                alert("Authentication failed: " + err.message);
+            }
+        };
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            switchTab('home');
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('admin-user-email').innerText = user.email;
+            } else {
+                document.getElementById('admin-user-email').innerText = '';
+                if (document.getElementById('tab-admin').classList.contains('active')) {
+                    switchTab('home');
+                }
+            }
+        });
+
+        // Initialize App on Load
+        loadAppData();
+    </script>
+
+    <!-- UI Tab Navigation Helpers -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchAdminSubTab(subId) {
+            document.querySelectorAll('.admin-sub-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('admin-sub-' + subId).classList.remove('hidden');
+            document.querySelectorAll('.admin-sub-tab').forEach(el => {
+                el.classList.remove('border-primary', 'text-primary');
+                el.classList.add('border-transparent', 'text-gray-500');
+            });
+            event.currentTarget.classList.add('border-primary', 'text-primary');
+            event.currentTarget.classList.remove('border-transparent', 'text-gray-500');
+        }
+
+        function openAuthModal() {
+            // Check if already logged in via Firebase Auth state
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('auth-modal').classList.add('flex');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.remove('flex');
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
